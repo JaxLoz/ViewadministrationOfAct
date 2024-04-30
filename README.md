@@ -1,3 +1,8 @@
+# integrantes
+- Javier Eduardo Montes Delgado
+- Moises Elias Silva Perez
+- Eylin Vanessa Ortega Buelvas
+
 # starVue
 
 This template should help get you started developing with Vue 3 in Vite.
