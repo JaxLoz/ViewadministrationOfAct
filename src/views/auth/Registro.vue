@@ -29,6 +29,7 @@
 <script setup>
 import { useAuthStore } from "@/stores/auth.js"
 import {ref} from "vue"
+import router from "@/router/index.js"
 
 
 const auth = useAuthStore();
@@ -45,5 +46,6 @@ const auth = useAuthStore();
 
     const submit = () => {
         auth.registro(formRegister.value);
+        router.push({name: 'formLogin'});
     }
 </script>

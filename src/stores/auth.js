@@ -23,10 +23,16 @@ export const useAuthStore = defineStore("auth", () =>{
             id_credential: id_credential,
         })
         
-        console.log(responseUser)
-
-
     }
 
-    return {user, registro}
+    const loginOfSistem = async (formLogin) =>{
+        const response = await axios.post("?controller=singup&action=login", {
+            email: formLogin.email,
+            user_password: formLogin.user_password
+        })
+
+        console.log(response.data.data);
+    }
+
+    return {user, registro, loginOfSistem}
 })
