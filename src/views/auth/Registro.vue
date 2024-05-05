@@ -9,33 +9,33 @@
     
       <div>  
       <form @submit.prevent="submit" class="flex flex-col justify-center content-center">
-        <div class="flex flex-col h-20">
-          <label class="text-base font-medium text-gray-900" for="primerNombre">Primer Nombre:</label>
+        <div class="flex flex-col gap-y-2 h-20">
+          <label class="text-base font-medium text-gray-900" for="primerNombre">Firts name</label>
           <input class="h-9 w-80 py-2 px-2 rounded-md ring-inset ring-1 ring-gray-300 focus:ring-inset focus:ring-2 focus:ring-[#4f46e5] outline-none" v-model="formRegister.firstname" type="text" id="primerNombre" name="primerNombre" required><br><br>
         </div>
         
         <div class="flex flex-col gap-y-2 h-20">
-        <label class="text-base font-medium text-gray-900" for="segundoNombre">Segundo Nombre:</label>
+        <label class="text-base font-medium text-gray-900" for="segundoNombre">Last name</label>
         <input class="h-9 w-80 py-2 px-2 rounded-md ring-inset ring-1 ring-gray-300 focus:ring-inset focus:ring-2 focus:ring-[#4f46e5] outline-none" v-model="formRegister.lastname" type="text" id="segundoNombre" name="segundoNombre"><br><br>
         </div>
 
         <div class="flex flex-col gap-y-2 h-20">
-        <label class="text-base font-medium text-gray-900" for="telefono">Teléfono:</label>
+        <label class="text-base font-medium text-gray-900" for="telefono">Phone</label>
         <input class="h-9 w-80 py-2 px-2 rounded-md ring-inset ring-1 ring-gray-300 focus:ring-inset focus:ring-2 focus:ring-[#4f46e5] outline-none" v-model="formRegister.phone" type="tel" id="telefono" name="telefono" pattern="[0-9]{10}" required><br><br>
         </div>
         
         <div class="flex flex-col gap-y-2 h-20">
-          <label class="text-base font-medium text-gray-900" for="email">Email:</label>
+          <label class="text-base font-medium text-gray-900" for="email">Email</label>
           <input class="h-9 w-80 py-2 px-2 rounded-md ring-inset ring-1 ring-gray-300 focus:ring-inset focus:ring-2 focus:ring-[#4f46e5] outline-none" v-model="formRegister.email" type="email" id="email" name="email"><br><br>
         </div>
         
         <div class="flex flex-col gap-y-2 h-20">
-          <label class="text-base font-medium text-gray-900" for="password">Password:</label>
+          <label class="text-base font-medium text-gray-900" for="password">Password</label>
           <input class="h-9 w-80 py-2 px-2 rounded-md ring-inset ring-1 ring-gray-300 focus:ring-inset focus:ring-2 focus:ring-[#4f46e5] outline-none" v-model="formRegister.user_password" type="password" id="password" name="password" required><br><br>
         </div>
         
         <div class="flex flex-col gap-y-2 h-20">
-        <label class="text-base font-medium text-gray-900" for="rol">Rol:</label>
+        <label class="text-base font-medium text-gray-900" for="rol">Rol</label>
         
         <select class=" h-9 w-80 py-1 px-2 rounded-md ring-inset ring-1 ring-gray-300 focus:ring-inset focus:ring-2 focus:ring-[#4f46e5] outline-none" v-model="formRegister.id_rol" id="rol" name="rol" required placeholder="Select rol">
           <option value="2">Host</option>

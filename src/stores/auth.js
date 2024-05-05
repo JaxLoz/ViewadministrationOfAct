@@ -30,8 +30,7 @@ export const useAuthStore = defineStore("auth", () =>{
             email: formLogin.email,
             user_password: formLogin.user_password
         })
-
-        console.log(response.data.data);
+        return response.data.status_code
     }
 
     return {user, registro, loginOfSistem}

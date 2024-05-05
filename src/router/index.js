@@ -31,7 +31,19 @@ const router = createRouter({
       path: "/adminActs",
       name: "adminActs",
       component: () => import("../views/home/Home.vue")
+    },
+    {
+      path: "/resumenAct",
+      name: "resumenAct",
+      component: () => import("../components/ResumeActs.vue")
+    },
+
+    {
+      path: "/createAct",
+      name: "createNewAct",
+      component: () => import("../views/act/NewAct.vue")
     }
+    
   ]
 })
 
