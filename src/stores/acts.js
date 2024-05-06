@@ -38,6 +38,12 @@ export const useActsStore = defineStore("acts", {
               id_act: idAct  
             })
             console.log("id de la relacion de act y meeting " + responseRelation)
+        },
+
+        async getAllInfoActs(idUser){
+            const responseActs = await axios.get("?controller=act&action=getAllInfoActsByUser&id="+idUser);
+            console.log(responseActs);
+            this.acts = responseActs.data.data;
         }
     }
 });
