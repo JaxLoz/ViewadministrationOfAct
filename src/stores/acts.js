@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "@/axios";
+import {reactive} from "vue";
 
 export const useActsStore = defineStore("acts", {
 
@@ -7,7 +8,9 @@ export const useActsStore = defineStore("acts", {
         acts : null,
         actIdInserted: null,
         meetingInserted: null,
-        idMeetingAndAct: null
+        idMeetingAndAct: null,
+        updateInfoActAndMeeting: null,
+        actionButtonUpdate: false
     }),
 
     actions: {
@@ -44,6 +47,37 @@ export const useActsStore = defineStore("acts", {
             const responseActs = await axios.get("?controller=act&action=getAllInfoActsByUser&id="+idUser);
             console.log(responseActs);
             this.acts = responseActs.data.data;
+        },
+
+        loadInfoForUpdateToSessionStorage(actMeetingObjet){
+          
+            const infoForUpdate = {
+                activeButtonUpdate: true,
+                infToUpdate: actMeetingObjet
+            }
+            sessionStorage.setItem("infoActToUpdate", JSON.stringify(infoForUpdate))
+            console.log(actMeetingObjet);
+        },
+
+        async updateInfoAct(infoActUpdate){
+            const responseUpdate = await axios.put("?controller=act&action=updateAct",{
+                id: this.updateInfoActAndMeeting.id_act,
+                progress: infoActUpdate.progress
+            })
+            console.log("ejecutando la actualizacion de act")
+            console.log(responseUpdate)
+        },
+
+        async updateInfoMeeting (infoMeetingUpdate){
+            const responseUpdate = await axios.put("?controller=meeting&action=updateMeeting",{
+                id: this.updateInfoActAndMeeting.id_meeting,
+                title: infoMeetingUpdate.title,
+                place: infoMeetingUpdate.place,
+                star_time: infoMeetingUpdate.start_time,
+                star_date: infoMeetingUpdate.start_date
+            })
+            console.log("ejecutano la actualziacin de meeting")
+            console.log(responseUpdate);
         }
     }
 });

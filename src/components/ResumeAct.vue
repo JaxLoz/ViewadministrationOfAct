@@ -9,11 +9,16 @@
             <p id="info-place">{{ place }}</p>
             <p id="info-hour">{{ hour }}</p>
         </div>
+        <div id="content-buttons">
+            <button @click="emit('updateInfoAct')">Actualizar</button>
+            <button @click="emit('deleteInfoAct')">Eliminar</button>
+        </div>
     </div>
 </template>
 
 <script setup>
 
+// definicion de propiedades del componente
 const props = defineProps({
     
     title:{
@@ -47,7 +52,9 @@ const props = defineProps({
     }
 
 })
-    // definicion de propiedades del componente
+    
+// definicion de eventos del componente
 
+const emit = defineEmits(["updateInfoAct", "deleteInfoAct"]);
 
 </script>

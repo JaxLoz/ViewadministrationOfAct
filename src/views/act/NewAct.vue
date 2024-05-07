@@ -57,8 +57,9 @@
 <script setup>
 import { useSessionStore } from "@/stores/session.js";
 import { useActsStore } from "@/stores/acts.js";
-import { computed, ref } from "vue";
+import { computed, onBeforeMount, onBeforeUnmount, onMounted, ref } from "vue";
 import router from "@/router/index.js";
+import { info } from "autoprefixer";
 const session = useSessionStore();
 session.loadInfoSessionOfSessionStorage();
 
@@ -75,19 +76,75 @@ const infoNewAct = ref({
 })
 
 const submit = async () => {
-    console.log("presionando el pt boton de save en NewActa.vue")
+        
+        if(useAct.actionButtonUpdate){
+            
+            if (infoNewAct.value.title != useAct.updateInfoActAndMeeting.title 
+                || infoNewAct.value.place != useAct.updateInfoActAndMeeting.place 
+                || infoNewAct.value.start_time != useAct.updateInfoActAndMeeting.star_time 
+                || infoNewAct.value.start_date != useAct.updateInfoActAndMeeting.star_date 
+                || infoNewAct.value.progress != useAct.updateInfoActAndMeeting.progress) {
 
-        const idActCreated = await useAct.createAct(infoNewAct.value);
-        console.log("se creo el acta con el id: "+idActCreated);
+                console.log("Se actualizaran los campos meeting");
+                useAct.updateInfoMeeting(infoNewAct.value);
+                
+            }
+            
+            if(infoNewAct.value.progress != useAct.updateInfoActAndMeeting.progress){
+                console.log("Se actualizaran los campos de actas");
+                useAct.updateInfoAct(infoNewAct.value);
+            }
+            console.log("presionando el pt boton de update en NewActa.vue")
 
-        const idMeetingCreated = await useAct.createMeeting(infoNewAct.value);
-        console.log("se creo la reunion con el id: "+ idMeetingCreated);
+        }else{
 
-        const relationMeetingAndAct = await useAct.relationMeetingAndAct(idActCreated, idMeetingCreated);
+            console.log("presionando el pt boton de save en NewActa.vue")
+
+            const idActCreated = await useAct.createAct(infoNewAct.value);
+            console.log("se creo el acta con el id: "+idActCreated);
+
+            const idMeetingCreated = await useAct.createMeeting(infoNewAct.value);
+            console.log("se creo la reunion con el id: "+ idMeetingCreated);
+
+            const relationMeetingAndAct = await useAct.relationMeetingAndAct(idActCreated, idMeetingCreated);
+        }
 }
 
 const cancel = () =>{
     router.push({name: "adminActs"});
 }
 
+onBeforeUnmount( () =>{
+    useAct.$reset(); // reseteamos los valores del state de del store useActStore cuando antes que el compoente se desmonte de la intancia vue
+    const existInfoToUpate = sessionStorage.getItem("infoActToUpdate");
+    
+    if(existInfoToUpate != null){
+        sessionStorage.removeItem("infoActToUpdate");
+    }
+});
+
+
+/* verificamos al montar el componente si existe informacion para actualizar, o sea, si se monto el componente para actualziarlo
+o para recar un acta nuevo. Si es para actualizar al momento el evento del boton actuazliar de home.vue debio crear una item en 
+sessionStorage que contenga esa informacion a actualizar para cargarla en el state de useActStore. En caso de que se haya montado 
+para crear entonces no debe haber ese item en el sessionStorage  y se carga la pagina con esl state en null lista para crear una nueva
+acta*/
+
+onMounted( () =>{
+    const existInfoToUpate = sessionStorage.getItem("infoActToUpdate");
+    
+    if(existInfoToUpate != null){
+        const infoActToUpdate = JSON.parse(existInfoToUpate);
+        useAct.updateInfoActAndMeeting = infoActToUpdate.infToUpdate;
+        useAct.actionButtonUpdate = true;
+
+        // carga de datos a los impusts del formulario
+        infoNewAct.value.title = useAct.updateInfoActAndMeeting.title;
+        infoNewAct.value.place = useAct.updateInfoActAndMeeting.place;
+        infoNewAct.value.start_time = useAct.updateInfoActAndMeeting.star_time;
+        infoNewAct.value.start_date = useAct.updateInfoActAndMeeting.star_date;
+        infoNewAct.value.progress = useAct.updateInfoActAndMeeting.progress;
+    }
+
+});
 </script>
