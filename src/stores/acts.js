@@ -44,8 +44,9 @@ export const useActsStore = defineStore("acts", {
         },
 
         async getAllInfoActs(idUser){
+            console.log(idUser)
             const responseActs = await axios.get("?controller=act&action=getAllInfoActsByUser&id="+idUser);
-            console.log(responseActs);
+            console.log("respuesta "+responseActs);
             this.acts = responseActs.data.data;
         },
 
@@ -78,6 +79,25 @@ export const useActsStore = defineStore("acts", {
             })
             console.log("ejecutano la actualziacin de meeting")
             console.log(responseUpdate);
+        },
+
+        async deleteActAndMeeting(infoForDelete){
+            const responseActandMeetinDelete = await axios.delete("?controller=meetAndAct&action=removeMeetAndActByIds&idAct="+infoForDelete.id_act+"&idMeeting="+infoForDelete.id_meeting);
+            console.log(responseActandMeetinDelete.data.data);
+
+            if(responseActandMeetinDelete.data.data == true){
+                console.log("se elimino correctamente la relacion de act y meeting")
+                await this.deleteAct(infoForDelete.id_act);
+                await this.deleteMeeting(infoForDelete.id_meeting);
+            }
+        },
+
+        async deleteMeeting(infoMeetingDelete){
+            const responseMeetingDelete = await axios.delete("?controller=meeting&action=removeMeeting&id="+infoMeetingDelete);
+        },
+
+        async deleteAct(infoActDelete){
+            const responseActDelete = await axios.delete("?controller=act&action=removeAct&id="+infoActDelete);
         }
     }
 });

@@ -12,7 +12,7 @@
         :hour="infAct.star_time"
         :place="infAct.place"
         @updateInfoAct="updatePage(infAct)"
-        @deleteInfoAct="() => console.log('Eliminar')"
+        @deleteInfoAct="deleteAct(infAct)"
 
         />
     </div>
@@ -42,7 +42,7 @@ const createNewAct = () => {
 
 onMounted( async () =>{
         await act.getAllInfoActs(session.IdUser);
-        //console.log(act.acts)
+        console.log(session.IdUser);
     }  
 );
 
@@ -50,5 +50,13 @@ const updatePage = (actMeetingInfo) =>{
     act.loadInfoForUpdateToSessionStorage(actMeetingInfo);
     router.push({name: 'createNewAct'})
 }
+
+const deleteAct = async (actMeetingInfo) =>{
+    console.log(actMeetingInfo)
+    await act.deleteActAndMeeting(actMeetingInfo);
+    await act.getAllInfoActs(session.IdUser);
+    
+
+} 
 
 </script>

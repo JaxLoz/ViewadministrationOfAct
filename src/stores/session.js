@@ -18,7 +18,7 @@ export const useSessionStore = defineStore("session", {
     actions: {
       
     async LoginUser(formLogin) {
-            console.log(formLogin)
+            //console.log(formLogin)
             const response = await axios.post("?controller=singup&action=getInfoUserByCredentials", {
                 email: formLogin.email
             })
