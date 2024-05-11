@@ -35,13 +35,13 @@ export const useActsStore = defineStore("acts", {
             return responseMeeting.data.data.id;
         },
 
-        async relationMeetingAndAct (idAct, idMeeting){
-            const responseRelation = await axios.post("?controller=meetAndAct&action=createMeetAndAct",{
-              id_meeting: idMeeting,
-              id_act: idAct  
-            })
-            console.log("id de la relacion de act y meeting " + responseRelation)
-        },
+            async relationMeetingAndAct (idAct, idMeeting){
+                const responseRelation = await axios.post("?controller=meetAndAct&action=createMeetAndAct",{
+                id_meeting: idMeeting,
+                id_act: idAct  
+                })
+                console.log("id de la relacion de act y meeting " + responseRelation)
+            },
 
         async getAllInfoActs(idUser){
             console.log(idUser)

@@ -13,7 +13,7 @@ export const useAuthStore = defineStore("auth", () =>{
             user_password: form.user_password
         })
 
-        const id_credential = response.data.data;
+        const id_credential = response.data.data.id;
         
         const responseUser = await axios.post("?controller=user&action=registerUser", {
             firstname: form.firstname,
