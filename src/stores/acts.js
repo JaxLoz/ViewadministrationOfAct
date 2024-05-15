@@ -44,10 +44,24 @@ export const useActsStore = defineStore("acts", {
             },
 
         async getAllInfoActs(idUser){
-            console.log(idUser)
+            
+            const meetingWithOutAct = await this.getMeetingWithOutAct(idUser);
+            const meetingWithAct = await this.getMeetingWithActs(idUser);
+            const allMeetings = meetingWithOutAct.concat(meetingWithAct);
+            this.acts = allMeetings; 
+
+            //const responseActs = await axios.get("?controller=act&action=getAllInfoActsByUser&id="+idUser);
+            //this.acts = responseActs.data.data;
+        },
+
+        async getMeetingWithOutAct(idUser){
+            const responseMeetingWithOutAct = await axios.get("?controller=meeting&action=getMeetingsWithOutActs&id="+idUser);
+            return responseMeetingWithOutAct.data.data;
+        },
+
+        async getMeetingWithActs(idUser){
             const responseActs = await axios.get("?controller=act&action=getAllInfoActsByUser&id="+idUser);
-            console.log("respuesta "+responseActs);
-            this.acts = responseActs.data.data;
+            return responseActs.data.data;
         },
 
         loadInfoForUpdateToSessionStorage(actMeetingObjet){

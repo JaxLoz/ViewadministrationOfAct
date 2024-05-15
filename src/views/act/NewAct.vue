@@ -35,12 +35,15 @@
                             <input v-model="infoNewAct.start_date" type="date" id="start-date" name="date" class="h-9 w-80 py-2 px-2 rounded-md ring-inset ring-1 ring-gray-300 focus:ring-inset focus:ring-2 focus:ring-[#4f46e5] outline-none" required>
                         </div>
                     </div>
-                    <div class="flex flex-col gap-y-2 ">
-                        <!--<label class="flex flex-row justify-start ml-10" for="description-act">Description</label>-->
-                        <textarea v-model="infoNewAct.progress" id="description-act" name="descriptionAct" class="h-80 my-8 mx-16 rounded-md px-3 py-2 ring-inset ring-1 ring-gray-300 focus:ring-inset focus:ring-2 focus:ring-[#4f46e5] outline-none" placeholder="Escribe aqui la informacion del acta" required></textarea>
-                    </div>
 
-                    <div id="button-content" class="flex flex-row justify-end mx-16 gap-x-10">
+                    <div id="content-check" class="flex flex-row-reverse justify-end gap-x-2 mx-16 mt-5" v-if="!useAct.actionButtonUpdate">
+                        <label class="" for="progress">Add act</label>
+                        <input type="checkbox" v-model="addAct">
+                    </div> 
+                    
+                    <createAct v-if="useAct.actionButtonUpdate || !useAct.actionButtonUpdate && addAct" v-model="infoNewAct.progress" />
+
+                    <div id="button-content" class="flex flex-row justify-end mx-16 gap-x-5">
                         <input class="bg-[#4f46e5] hover:bg-[#6366f1] text-white font-medium py-2 px-5  rounded-md" id="button-save" type="submit" value="Save">
                         <button class="bg-[#c83e3e] hover:bg-[#f06363] text-white font-medium py-2 px-5  rounded-md" id="button-cancel" @click.prevent="cancel()">Cancel</button>
                     </div>
@@ -57,14 +60,19 @@
 <script setup>
 import { useSessionStore } from "@/stores/session.js";
 import { useActsStore } from "@/stores/acts.js";
-import { computed, onBeforeMount, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed,onBeforeUnmount, onMounted, ref } from "vue";
 import router from "@/router/index.js";
-import { info } from "autoprefixer";
+import createAct from "@/components/createAct.vue";
+
+
+
 const session = useSessionStore();
 session.loadInfoSessionOfSessionStorage();
 
 const nameAuthor = computed(() => session.firstname + " " + session.lastname);
 const useAct = useActsStore();
+
+const addAct = ref(false);
 
 const infoNewAct = ref({
     id_user: useSessionStore().IdUser,
@@ -97,16 +105,20 @@ const submit = async () => {
             console.log("presionando el pt boton de update en NewActa.vue")
 
         }else{
-
+            
             console.log("presionando el pt boton de save en NewActa.vue")
-
-            const idActCreated = await useAct.createAct(infoNewAct.value);
-            console.log("se creo el acta con el id: "+idActCreated);
-
+            
             const idMeetingCreated = await useAct.createMeeting(infoNewAct.value);
             console.log("se creo la reunion con el id: "+ idMeetingCreated);
+            
+            if(addAct.value){
+                const idActCreated = await useAct.createAct(infoNewAct.value);
+                console.log("se creo el acta con el id: "+idActCreated);   
+                
+                const relationMeetingAndAct = await useAct.relationMeetingAndAct(idActCreated, idMeetingCreated);
+            }
 
-            const relationMeetingAndAct = await useAct.relationMeetingAndAct(idActCreated, idMeetingCreated);
+
         }
 }
 

@@ -4,10 +4,11 @@
             <h1 id="title">{{ title }}</h1>
         </div>
         <div id="content-info">
-            <p id="info-author">{{ author }}</p>
+            <p id="info-author" v-if="!author.startsWith('undefined') && !author.endsWith('undefined')">{{ author }}</p>
             <p id="info-date">{{ date }}</p>
             <p id="info-place">{{ place }}</p>
             <p id="info-hour">{{ hour }}</p>
+            <span id="info-progress">{{ thereIsMinutes }}</span>
         </div>
         <div id="content-buttons">
             <button @click="emit('updateInfoAct')">Actualizar</button>
@@ -49,6 +50,12 @@ const props = defineProps({
         type: String,
         required: true,
         default: "HH:MM:SS"
+    },
+
+    thereIsMinutes:{
+        type: String,
+        required: true,
+        default: "Without 🐸minutes"
     }
 
 })

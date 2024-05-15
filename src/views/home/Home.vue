@@ -2,20 +2,21 @@
     <div>
         <h1>Inicios de sesion exitoso {{ userName }}!</h1>
     </div>
-    <div id="content-resumeActs">
-        <ResumeAct
-        
-        v-for="infAct in act.acts" :key="infAct.id"
-        :title="infAct.title"
-        :author="infAct.firstname+' '+infAct.lastname"
-        :date="infAct.star_date"
-        :hour="infAct.star_time"
-        :place="infAct.place"
-        @updateInfoAct="updatePage(infAct)"
-        @deleteInfoAct="deleteAct(infAct)"
-
-        />
-    </div>
+        <div id="content-resumeActs">
+            <ResumeAct
+            
+            v-for="infAct in act.acts" :key="infAct.id"
+            :title="infAct.title"
+            :author="infAct.firstname+' '+infAct.lastname"
+            :date="infAct.star_date"
+            :hour="infAct.star_time"
+            :place="infAct.place"
+            :thereIsMinutes="infAct.id_act != undefined ? 'With minutes' : 'Without minutes'"
+            @updateInfoAct="updatePage(infAct)"
+            @deleteInfoAct="deleteAct(infAct)"
+            />
+            
+        </div>
     <div>
         <button @click="createNewAct">+ New act</button>
     </div>
@@ -28,8 +29,9 @@ import { useStorePrueba } from "@/stores/pruebas.js";
 import { useSessionStore } from "@/stores/session.js";
 import { useActsStore} from "@/stores/acts.js";
 import { computed, onMounted } from "vue";
+import { ref } from "vue";
 
-
+const thereIsAct = ref(null);
 const session = useSessionStore();
 const act = useActsStore();
 
@@ -42,7 +44,6 @@ const createNewAct = () => {
 
 onMounted( async () =>{
         await act.getAllInfoActs(session.IdUser);
-        console.log(session.IdUser);
     }  
 );
 

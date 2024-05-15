@@ -35,7 +35,7 @@ const router = createRouter({
     {
       path: "/resumenAct",
       name: "resumenAct",
-      component: () => import("../components/ResumeActs.vue")
+      component: () => import("../components/ResumeAct.vue")
     },
 
     {
