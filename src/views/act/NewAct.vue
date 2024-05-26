@@ -98,11 +98,21 @@ const submit = async () => {
                 
             }
             
-            if(infoNewAct.value.progress != useAct.updateInfoActAndMeeting.progress){
+            if(infoNewAct.value.progress != useAct.updateInfoActAndMeeting.progress && useAct.updateInfoActAndMeeting.id_act != undefined){
                 console.log("Se actualizaran los campos de actas");
                 useAct.updateInfoAct(infoNewAct.value);
+            
+            }
+            
+            
+            if("id_act" in useAct.updateInfoActAndMeeting === false){
+                const idNewAct = await useAct.createAct(infoNewAct.value);
+                console.log("se creo el acta con el id: "+idNewAct);
+                useAct.relationMeetingAndAct(idNewAct, useAct.updateInfoActAndMeeting.id);
+                console.log("el acta deberia de crearse y relacionarse ya que no esta creada para esta reunion");
             }
             console.log("presionando el pt boton de update en NewActa.vue")
+            
 
         }else{
             

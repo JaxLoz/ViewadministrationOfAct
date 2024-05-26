@@ -1,24 +1,26 @@
 <template>
-    <div>
+    <div class="flex flex-row justify-between gap-y-5 px-5">
         <h1>Inicios de sesion exitoso {{ userName }}!</h1>
-    </div>
-        <div id="content-resumeActs">
+        <button @click="createNewAct">+ New act</button>
+        <button @click="logOut">LogOut</button>
+    </div class="">
+        <div id="content-resumeActs" class="flex flex-col items-center gap-y-5">
             <ResumeAct
             
-            v-for="infAct in act.acts" :key="infAct.id"
+            v-for="infAct in act.acts" :key="infAct.id ? infAct.id : infAct.id_meeeting"
             :title="infAct.title"
             :author="infAct.firstname+' '+infAct.lastname"
             :date="infAct.star_date"
             :hour="infAct.star_time"
             :place="infAct.place"
-            :thereIsMinutes="infAct.id_act != undefined ? 'With minutes' : 'Without minutes'"
+            :thereIsMinutes="infAct.id_act != undefined ? true : false"
             @updateInfoAct="updatePage(infAct)"
             @deleteInfoAct="deleteAct(infAct)"
             />
             
         </div>
     <div>
-        <button @click="createNewAct">+ New act</button>
+       
     </div>
 </template>
 
@@ -43,6 +45,7 @@ const createNewAct = () => {
 }
 
 onMounted( async () =>{
+        console.log(session.IdUser)
         await act.getAllInfoActs(session.IdUser);
     }  
 );
@@ -57,7 +60,10 @@ const deleteAct = async (actMeetingInfo) =>{
     await act.deleteActAndMeeting(actMeetingInfo);
     await act.getAllInfoActs(session.IdUser);
     
-
 } 
+
+const logOut = () =>{
+    router.push({name: 'formLogin'})
+}
 
 </script>

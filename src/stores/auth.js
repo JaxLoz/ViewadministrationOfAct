@@ -6,6 +6,8 @@ export const useAuthStore = defineStore("auth", () =>{
 
     const user = ref(null);
 
+    // registra un nuevo usuario
+
     const registro = async (form) =>{
         
         const response = await axios.post("?controller=singup&action=registerCredential", {
@@ -20,17 +22,19 @@ export const useAuthStore = defineStore("auth", () =>{
             lastname: form.lastname,
             phone: form.phone,
             id_rol: form.id_rol,
-            id_credential: id_credential,
+            id_credential: id_credential,// esto ya no se necesita enviar
         })
         
     }
 
+    // comprueba las credendiales del usuario
     const loginOfSistem = async (formLogin) =>{
         const response = await axios.post("?controller=singup&action=login", {
             email: formLogin.email,
             user_password: formLogin.user_password
         })
-        return response.data.status_code
+        sessionStorage.setItem("authenticationToken", JSON.stringify(response.data.data))
+        return response.data.data.validateCredentials; // true o false si las credenciales son correctas
     }
 
     return {user, registro, loginOfSistem}

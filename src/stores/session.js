@@ -17,13 +17,12 @@ export const useSessionStore = defineStore("session", {
 
     actions: {
       
+      // recupero la informacion del usuario que se logueo y la guardo en el estado del store y en el sessionStorage
     async LoginUser(formLogin) {
-            //console.log(formLogin)
             const response = await axios.post("?controller=singup&action=getInfoUserByCredentials", {
                 email: formLogin.email
             })
-            console.log(response);
-            this.loadInfoSessionInState(response);
+            this.loadInfoSessionInState(response); // carga la información de la sesión en el estado
 
             const user = {
               IdUser: this.IdUser,
@@ -35,7 +34,7 @@ export const useSessionStore = defineStore("session", {
               isAuthentication: this.isAuthentication
             };
 
-            sessionStorage.setItem("sessionForm", JSON.stringify(user));
+            sessionStorage.setItem("sessionForm", JSON.stringify(user)); // guardo la info en el sessionStorage
         },
       
 
@@ -62,7 +61,7 @@ export const useSessionStore = defineStore("session", {
     loadInfoSessionOfSessionStorage(){
       onMounted (() =>{
         const infoSession = sessionStorage.getItem("sessionForm");
-
+    
         if(infoSession === null){
           router.push("/login");
         }else{

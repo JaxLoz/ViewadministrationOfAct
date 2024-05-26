@@ -29,7 +29,7 @@
 <script setup>
 import { useAuthStore } from "@/stores/auth.js"
 import {useSessionStore} from "@/stores/session.js"
-import { ref } from "vue"
+import { onMounted, ref } from "vue"
 import router from "@/router/index.js"
 
 const log = useAuthStore();
@@ -43,12 +43,16 @@ const formLogin = ref({
 const login = async () =>{
     
     const response = await log.loginOfSistem(formLogin.value)   
-        
-    if(response === 200){
-        session.LoginUser(formLogin.value)
+        console.log(response)
+    if(response){
+        await session.LoginUser(formLogin.value)
         router.push({name: "adminActs"})
     } 
 }
+
+onMounted(() =>{
+    sessionStorage.clear()
+})
 
 </script>
 

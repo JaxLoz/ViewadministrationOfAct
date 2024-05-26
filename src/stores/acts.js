@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "@/axios";
 import {reactive} from "vue";
+import { info } from "autoprefixer";
 
 export const useActsStore = defineStore("acts", {
 
@@ -43,11 +44,13 @@ export const useActsStore = defineStore("acts", {
                 console.log("id de la relacion de act y meeting " + responseRelation)
             },
 
+        // metodo que se encarga de obtener la informacion de las reuniones y actos de un usuario
         async getAllInfoActs(idUser){
-            
+            console.log(idUser)
             const meetingWithOutAct = await this.getMeetingWithOutAct(idUser);
             const meetingWithAct = await this.getMeetingWithActs(idUser);
             const allMeetings = meetingWithOutAct.concat(meetingWithAct);
+            
             this.acts = allMeetings; 
 
             //const responseActs = await axios.get("?controller=act&action=getAllInfoActsByUser&id="+idUser);
@@ -92,18 +95,26 @@ export const useActsStore = defineStore("acts", {
                 star_date: infoMeetingUpdate.start_date
             })
             console.log("ejecutano la actualziacin de meeting")
-            console.log(responseUpdate);
         },
 
         async deleteActAndMeeting(infoForDelete){
-            const responseActandMeetinDelete = await axios.delete("?controller=meetAndAct&action=removeMeetAndActByIds&idAct="+infoForDelete.id_act+"&idMeeting="+infoForDelete.id_meeting);
-            console.log(responseActandMeetinDelete.data.data);
 
-            if(responseActandMeetinDelete.data.data == true){
-                console.log("se elimino correctamente la relacion de act y meeting")
-                await this.deleteAct(infoForDelete.id_act);
-                await this.deleteMeeting(infoForDelete.id_meeting);
-            }
+            if(infoForDelete.id_act === undefined || infoForDelete.id_meeting === undefined){
+                const responseMeetinDelete = await this.deleteMeeting(infoForDelete.id);
+                console.log("se elimino la reunion correctamente")
+            
+            }else if ("id_act" in infoForDelete || "id_meeting" in infoForDelete) {
+                
+                const responseActandMeetinDelete = await axios.delete("?controller=meetAndAct&action=removeMeetAndActByIds&idAct="+infoForDelete.id_act+"&idMeeting="+infoForDelete.id_meeting);
+                console.log(responseActandMeetinDelete.data.data);
+                
+                if(responseActandMeetinDelete.data.data == true){
+                    console.log("se elimino correctamente la relacion de act y meeting")
+                    await this.deleteAct(infoForDelete.id_act);
+                    await this.deleteMeeting(infoForDelete.id_meeting);
+                }
+            } 
+
         },
 
         async deleteMeeting(infoMeetingDelete){
