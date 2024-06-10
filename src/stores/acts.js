@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "@/axios";
-import {reactive} from "vue";
-import { info } from "autoprefixer";
+import {useAxios} from "@/composables/useAxios";
 
 export const useActsStore = defineStore("acts", {
 
@@ -47,8 +46,8 @@ export const useActsStore = defineStore("acts", {
         // metodo que se encarga de obtener la informacion de las reuniones y actos de un usuario
         async getAllInfoActs(idUser){
             console.log(idUser)
-            const meetingWithOutAct = await this.getMeetingWithOutAct(idUser);
             const meetingWithAct = await this.getMeetingWithActs(idUser);
+            const meetingWithOutAct = await this.getMeetingWithOutAct(idUser);
             const allMeetings = meetingWithOutAct.concat(meetingWithAct);
             
             this.acts = allMeetings; 
@@ -58,13 +57,23 @@ export const useActsStore = defineStore("acts", {
         },
 
         async getMeetingWithOutAct(idUser){
-            const responseMeetingWithOutAct = await axios.get("?controller=meeting&action=getMeetingsWithOutActs&id="+idUser);
-            return responseMeetingWithOutAct.data.data;
+            try{
+                const responseMeetingWithOutAct = await useAxios().get("?controller=meeting&action=getMeetingsWithOutActs&id="+idUser);
+                console.log(responseMeetingWithOutAct.data.data)
+                return responseMeetingWithOutAct.data.data;
+            }catch{
+            }
         },
 
         async getMeetingWithActs(idUser){
-            const responseActs = await axios.get("?controller=act&action=getAllInfoActsByUser&id="+idUser);
-            return responseActs.data.data;
+            try{
+                const responseActs = await useAxios().get("?controller=act&action=getAllInfoActsByUser&id="+idUser);
+                console.log(responseActs.data.data)
+                return responseActs.data.data;
+            }catch{
+                
+            }
+
         },
 
         loadInfoForUpdateToSessionStorage(actMeetingObjet){

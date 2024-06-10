@@ -5,6 +5,7 @@ import {defineStore} from "pinia"
 export const useAuthStore = defineStore("auth", () =>{
 
     const user = ref(null);
+    const credential = ref(null)
 
     // registra un nuevo usuario
 
@@ -16,6 +17,7 @@ export const useAuthStore = defineStore("auth", () =>{
         })
 
         const id_credential = response.data.data.id;
+        credential.value = id_credential;
         
         const responseUser = await axios.post("?controller=user&action=registerUser", {
             firstname: form.firstname,
@@ -37,5 +39,5 @@ export const useAuthStore = defineStore("auth", () =>{
         return response.data.data.validateCredentials; // true o false si las credenciales son correctas
     }
 
-    return {user, registro, loginOfSistem}
+    return {credential, user, registro, loginOfSistem}
 })

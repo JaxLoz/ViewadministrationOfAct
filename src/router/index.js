@@ -42,6 +42,11 @@ const router = createRouter({
       path: "/createAct",
       name: "createNewAct",
       component: () => import("../views/act/NewAct.vue")
+    },
+    {
+      path: "/mailVerification",
+      name: "mailVerification",
+      component: () => import("../views/auth/EmailVerification.vue")
     }
     
   ]

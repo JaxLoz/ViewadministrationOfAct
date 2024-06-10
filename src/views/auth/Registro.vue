@@ -77,6 +77,6 @@ const auth = useAuthStore();
 
     const submit = () => {
         auth.registro(formRegister.value);
-        router.push({name: 'formLogin'});
+        router.push({name: 'mailVerification'});
     }
 </script>
