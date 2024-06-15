@@ -1,11 +1,12 @@
 import axios from "@/axios"
 import {ref, computed} from "vue"
 import {defineStore} from "pinia"
+//import {useEmailValidatinStore} from "@/stores/mailValidation.js"
 
 export const useAuthStore = defineStore("auth", () =>{
-
     const user = ref(null);
     const credential = ref(null)
+    //const emailValidationStore = useEmailValidatinStore()
 
     // registra un nuevo usuario
 
@@ -18,6 +19,8 @@ export const useAuthStore = defineStore("auth", () =>{
 
         const id_credential = response.data.data.id;
         credential.value = id_credential;
+        //emailValidationStore.setIdCredentials(id_credential);
+
         
         const responseUser = await axios.post("?controller=user&action=registerUser", {
             firstname: form.firstname,
@@ -36,7 +39,7 @@ export const useAuthStore = defineStore("auth", () =>{
             user_password: formLogin.user_password
         })
         sessionStorage.setItem("authenticationToken", JSON.stringify(response.data.data))
-        return response.data.data.validateCredentials; // true o false si las credenciales son correctas
+        return response.data.data; // true o false si las credenciales son correctas
     }
 
     return {credential, user, registro, loginOfSistem}

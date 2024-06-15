@@ -31,9 +31,11 @@ import { useAuthStore } from "@/stores/auth.js"
 import {useSessionStore} from "@/stores/session.js"
 import { onMounted, ref } from "vue"
 import router from "@/router/index.js"
+import { useEmailValidationStore } from "@/stores/mailValidation.js"
 
 const log = useAuthStore();
 const session = useSessionStore();
+const emailValidation = useEmailValidationStore();
 
 const formLogin = ref({
     email: "",
@@ -43,11 +45,22 @@ const formLogin = ref({
 const login = async () =>{
     
     const response = await log.loginOfSistem(formLogin.value)   
-        console.log(response)
-    if(response){
-        await session.LoginUser(formLogin.value)
-        router.push({name: "adminActs"})
-    } 
+    console.log(response.validateCredentials)
+    console.log(response.isVerified)
+    
+    if(response.credentialsOk){
+        if(response.isVerified){
+            if(response.validateCredentials){
+                await session.LoginUser(formLogin.value)
+                router.push({name: "adminActs"})
+            }
+        }else{
+            emailValidation.setEmail(formLogin.value.email);
+            emailValidation.uploadEmailSessionStorage(formLogin.value.email)
+            router.push({name: 'mailVerification'});
+            console.log("enviando al la vista de verificacion de correo")
+        }   
+    }
 }
 
 onMounted(() =>{

@@ -22,28 +22,47 @@
 <script setup>
 
 import { useAuthStore } from '@/stores/auth';
-import { useEmailValidatinStore } from "@/stores/mailValidation";
-import { computed, ref } from 'vue';
+import { useEmailValidationStore } from "@/stores/mailValidation";
+import { computed, onMounted, ref } from 'vue';
+import router from "@/router/index.js";
 
 const user = useAuthStore();
-const emailValidation = useEmailValidatinStore();
+const emailValidation = useEmailValidationStore();
 const verificationCode = ref("");
 const isVerified = computed( () => emailValidation.isEmailValid);
 
-const idCredential = computed(() => user.credential)
+const email = computed(() => emailValidation.email)
 
 const verifyCode = async () => {
-  await emailValidation.emailVerify(idCredential.value, verificationCode.value);
+  await emailValidation.emailVerify(email.value, verificationCode.value);
+  console.log(isVerified.value)
+
   if(isVerified.value) {
-    router.push("/login");
+    router.push({name: 'formLogin'});
   }
 };
 
 const resendCode = async () => {
-  
+  const response = await emailValidation.refreshVerificationCode();
+  console.log(response)
+  if(response){
+    await emailValidation.sendEmailVerificationCode();
   }
+}
+
+onMounted(async () => {
+  console.log(email.value)
+
+  if(sessionStorage.getItem("validationEmail") != null && email.value == ""){
+    emailValidation.downloadEmailLocalStorage();
+  }
+
+  if(email.value != ""){
+    
+    await emailValidation.sendEmailVerificationCode(email.value)
+  }
+}) 
 
 </script>
 
-<style scoped>
-</style>
+

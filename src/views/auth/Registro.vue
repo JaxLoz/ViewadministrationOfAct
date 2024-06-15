@@ -59,10 +59,11 @@
   </template>
 <script setup>
 import { useAuthStore } from "@/stores/auth.js"
-import {ref} from "vue"
+import {computed, ref} from "vue"
 import router from "@/router/index.js"
+import { useEmailValidationStore } from "@/stores/mailValidation.js"
 
-
+const mailValidation = useEmailValidationStore();
 const auth = useAuthStore();
 
     const formRegister = ref({
@@ -75,8 +76,11 @@ const auth = useAuthStore();
         user_password: ""
     })
 
-    const submit = () => {
-        auth.registro(formRegister.value);
+    const submit = async () => {
+        await auth.registro(formRegister.value);
+        console.log(formRegister.value.email);
+        mailValidation.setEmail(formRegister.value.email);
+        mailValidation.uploadEmailSessionStorage(formRegister.value.email);
         router.push({name: 'mailVerification'});
     }
 </script>
