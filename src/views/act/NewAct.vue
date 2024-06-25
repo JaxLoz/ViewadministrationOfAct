@@ -43,7 +43,37 @@
                     
                     <createAct v-if="useAct.actionButtonUpdate || !useAct.actionButtonUpdate && addAct" v-model="infoNewAct.progress" />
 
-                    <div id="button-content" class="flex flex-row justify-end mx-16 gap-x-5">
+                    <div id="invitations-section" class="mt-8 mx-16">
+                        <h2 class="text-xl font-semibold mb-4">Invitations</h2>
+                        <search />
+                        <div>
+                            <h3 class="font-semibold mb-2">Invited People:</h3>
+                            <ul class="bg-gray-100 rounded-md p-2">
+                                <li v-if="invitationStore.invitations.length === 0">
+                                    <span class="text-gray-500">No people invited yet</span>
+                                </li>
+                                <li v-else-if="invitationStore.invitations.length > 0"
+                                v-for="guest in invitationStore.invitations"
+                                :key="guest.id"
+                                class="flex justify-between items-center py-1 px-5">
+                                    <span>{{ guest.firstname+' '+guest.lastname }}</span>
+                                    <span>{{ guest.email }}</span>
+                                    <button @click="deleteGuest(guest)" class="text-red-500 hover:underline">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash hover:stroke-red-500">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M4 7l16 0"/>
+                                            <path d="M10 11l0 6"/>
+                                            <path d="M14 11l0 6"/>
+                                            <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/>
+                                            <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
+                                        </svg>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="button-content" class="flex flex-row justify-end mx-16 gap-x-5 mt-8">
                         <input class="bg-[#4f46e5] hover:bg-[#6366f1] text-white font-medium py-2 px-5  rounded-md" id="button-save" type="submit" value="Save">
                         <button class="bg-[#c83e3e] hover:bg-[#f06363] text-white font-medium py-2 px-5  rounded-md" id="button-cancel" @click.prevent="cancel()">Cancel</button>
                     </div>
@@ -52,26 +82,26 @@
 
         </div>
 
-        
-
     </div>
 </template>
 
 <script setup>
 import { useSessionStore } from "@/stores/session.js";
 import { useActsStore } from "@/stores/acts.js";
+import { useUserStore } from "@/stores/user";
+import { useInvitationStore } from "@/stores/invitation.js";
 import { computed,onBeforeUnmount, onMounted, ref } from "vue";
 import router from "@/router/index.js";
 import createAct from "@/components/createAct.vue";
-
+import search from "@/components/search.vue";
 
 
 const session = useSessionStore();
-session.loadInfoSessionOfSessionStorage();
+const useAct = useActsStore();
+const userStore = useUserStore();
+const invitationStore = useInvitationStore();
 
 const nameAuthor = computed(() => session.firstname + " " + session.lastname);
-const useAct = useActsStore();
-
 const addAct = ref(false);
 
 const infoNewAct = ref({
@@ -83,8 +113,15 @@ const infoNewAct = ref({
     progress: ""
 })
 
+session.loadInfoSessionOfSessionStorage();
+
+const deleteGuest = (guest) => {
+    invitationStore.deletePersonInvited(guest);
+}
+
 const submit = async () => {
-        
+    
+    // su esta en modo actualizar
         if(useAct.actionButtonUpdate){
             
             if (infoNewAct.value.title != useAct.updateInfoActAndMeeting.title 
@@ -95,15 +132,12 @@ const submit = async () => {
 
                 console.log("Se actualizaran los campos meeting");
                 useAct.updateInfoMeeting(infoNewAct.value);
-                
             }
             
             if(infoNewAct.value.progress != useAct.updateInfoActAndMeeting.progress && useAct.updateInfoActAndMeeting.id_act != undefined){
                 console.log("Se actualizaran los campos de actas");
                 useAct.updateInfoAct(infoNewAct.value);
-            
             }
-            
             
             if("id_act" in useAct.updateInfoActAndMeeting === false){
                 const idNewAct = await useAct.createAct(infoNewAct.value);
@@ -114,12 +148,16 @@ const submit = async () => {
             console.log("presionando el pt boton de update en NewActa.vue")
             
 
-        }else{
+        }else{ // si esta en modo crear
             
             console.log("presionando el pt boton de save en NewActa.vue")
             
             const idMeetingCreated = await useAct.createMeeting(infoNewAct.value);
             console.log("se creo la reunion con el id: "+ idMeetingCreated);
+
+            if(invitationStore.invitations.length > 0 && idMeetingCreated != undefined){
+                invitationStore.insertInvitations(idMeetingCreated);
+            }
             
             if(addAct.value){
                 const idActCreated = await useAct.createAct(infoNewAct.value);
@@ -127,7 +165,6 @@ const submit = async () => {
                 
                 const relationMeetingAndAct = await useAct.relationMeetingAndAct(idActCreated, idMeetingCreated);
             }
-
 
         }
 }
@@ -153,6 +190,7 @@ para crear entonces no debe haber ese item en el sessionStorage  y se carga la p
 acta*/
 
 onMounted( () =>{
+    userStore.getUsers();
     const existInfoToUpate = sessionStorage.getItem("infoActToUpdate");
     
     if(existInfoToUpate != null){
