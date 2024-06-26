@@ -1,86 +1,89 @@
 <template>
-    <div id="content-infMeeting" class="content-wrapper pt-16 h-full flex flex-col gap-y-6 font-sans">
-
-        <div id="title-infMeeting" class="w-full flex flex-col items-center gap-y-3">
-            <h1 class="mt-5 font-bold text-3xl" >Meeting information</h1>
-            <div id="infoAuthor" class="flex flex-row items-center gap-x-1">
-            <span class="text-xs text-gray-500">created by</span>
-            <span class="text-sm text-gray-500 hover:underline hover:decoration-2 hover:decoration-indigo-500">{{ nameAuthor }}</span>
-            </div>
+    <div id="content-infMeeting" class="content-wrapper max-w-4xl mx-auto pt-16 pb-12 font-sans">
+      <div id="title-infMeeting" class="text-center mb-10">
+        <h1 class="text-3xl font-bold text-gray-800">Meeting Information</h1>
+        <div id="infoAuthor" class="mt-2 text-sm text-gray-500">
+          <span>Created by </span>
+          <span class="font-medium hover:text-indigo-600 cursor-pointer">{{ nameAuthor }}</span>
         </div>
-
-        <div id="content-form" class="w-full h-full flex flex-col items-center">
-            <div id="contentform-infMeeting" class="w-full flex flex-col" >
-
-                <form id="form-infMeeting" @submit.prevent="submit" class="w-full h-full">
-                    <div class="grid grid-rows-2 grid-cols-2 gap-y-8 justify-items-center">
-                        
-                        <div class="flex flex-col gap-y-2" >
-                            <label class="block" for="title">Name of de meeting</label>
-                            <input v-model="infoNewAct.title" type="text" id="title" name="title" class="h-9 w-80 py-2 px-2 rounded-md ring-inset ring-1 ring-gray-300 focus:ring-inset focus:ring-2 focus:ring-[#4f46e5] outline-none" required>
-                        </div>
-
-                        <div class="flex flex-col gap-y-2">
-                            <label class="block" for="place">Place</label>
-                            <input v-model="infoNewAct.place" type="text" id="place" name="place" class="h-9 w-80 py-2 px-2 rounded-md ring-inset ring-1 ring-gray-300 focus:ring-inset focus:ring-2 focus:ring-[#4f46e5] outline-none" required>
-                        </div>
-
-                        <div class="flex flex-col gap-y-2">
-                            <label class="block" for="start-time">Start time</label>
-                            <input v-model="infoNewAct.start_time" type="time" id="start-time" name="date" class="h-9 w-80 py-2 px-2 rounded-md ring-inset ring-1 ring-gray-300 focus:ring-inset focus:ring-2 focus:ring-[#4f46e5] outline-none" required>
-                        </div>
-
-                        <div class="flex flex-col gap-y-2">
-                            <label class="block" for="start-date">Start date</label>
-                            <input v-model="infoNewAct.start_date" type="date" id="start-date" name="date" class="h-9 w-80 py-2 px-2 rounded-md ring-inset ring-1 ring-gray-300 focus:ring-inset focus:ring-2 focus:ring-[#4f46e5] outline-none" required>
-                        </div>
-                    </div>
-
-                    <div id="content-check" class="flex flex-row-reverse justify-end gap-x-2 mx-16 mt-5" v-if="!useAct.actionButtonUpdate">
-                        <label class="" for="progress">Add act</label>
-                        <input type="checkbox" v-model="addAct">
-                    </div> 
-                    
-                    <createAct v-if="useAct.actionButtonUpdate || !useAct.actionButtonUpdate && addAct" v-model="infoNewAct.progress" />
-
-                    <div id="invitations-section" class="mt-8 mx-16">
-                        <h2 class="text-xl font-semibold mb-4">Invitations</h2>
-                        <search />
-                        <div>
-                            <h3 class="font-semibold mb-2">Invited People:</h3>
-                            <ul v-if="invitationStore.invitations.length != 0" class="bg-gray-100 rounded-md p-2">
-                                <li
-                                v-for="guest in invitationStore.invitations"
-                                :key="guest.id"
-                                class="flex justify-between items-center py-1 px-5">
-                                    <span>{{ guest.firstname+' '+guest.lastname }}</span>
-                                    <span>{{ guest.email }}</span>
-                                    <button @click="deleteGuest(guest)" class="text-red-500 hover:underline">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash hover:stroke-red-500">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                            <path d="M4 7l16 0"/>
-                                            <path d="M10 11l0 6"/>
-                                            <path d="M14 11l0 6"/>
-                                            <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/>
-                                            <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
-                                        </svg>
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div id="button-content" class="flex flex-row justify-end mx-16 gap-x-5 mt-8">
-                        <input class="bg-[#4f46e5] hover:bg-[#6366f1] text-white font-medium py-2 px-5  rounded-md" id="button-save" type="submit" value="Save">
-                        <button class="bg-[#c83e3e] hover:bg-[#f06363] text-white font-medium py-2 px-5  rounded-md" id="button-cancel" @click.prevent="cancel()">Cancel</button>
-                    </div>
-                </form>
-            </div>
-
+      </div>
+  
+      <form id="form-infMeeting" @submit.prevent="submit" class="space-y-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700" for="title">Name of the meeting</label>
+            <input v-model="infoNewAct.title" type="text" id="title" name="title" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700" for="place">Place</label>
+            <input v-model="infoNewAct.place" type="text" id="place" name="place" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700" for="start-time">Start time</label>
+            <input v-model="infoNewAct.start_time" type="time" id="start-time" name="start-time" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700" for="start-date">Start date</label>
+            <input v-model="infoNewAct.start_date" type="date" id="start-date" name="start-date" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+          </div>
         </div>
-
+  
+        <div v-if="!useAct.actionButtonUpdate" class="flex items-center justify-end space-x-2">
+          <input type="checkbox" v-model="addAct" id="add-act" class="rounded text-indigo-600 focus:ring-indigo-500">
+          <label for="add-act" class="text-sm font-medium text-gray-700">Add act</label>
+        </div>
+  
+        <createAct v-if="useAct.actionButtonUpdate || (!useAct.actionButtonUpdate && addAct)" v-model="infoNewAct.progress" />
+  
+        <div id="invitations-section" class="space-y-6">
+          <h2 class="text-2xl font-semibold text-gray-800">Invitations</h2>
+          <search />
+          
+          <div v-if="invitationStore.invitations.length > 0" class="bg-white shadow overflow-hidden sm:rounded-md">
+            <h3 class="px-4 py-3 bg-gray-50 text-sm font-medium text-gray-700">Invitations:</h3>
+            <ul class="divide-y divide-gray-200">
+              <li v-for="guest in invitationStore.invitations" :key="guest.id" class="flex items-center justify-between px-4 py-3 hover:bg-gray-50">
+                <div>
+                  <p class="text-sm font-medium text-gray-900">{{ guest.firstname + ' ' + guest.lastname }}</p>
+                  <p class="text-sm text-gray-500">{{ guest.email }}</p>
+                </div>
+                <button @click="deleteGuest(guest)" class="text-red-600 hover:text-red-800">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </li>
+            </ul>
+          </div>
+  
+          <div v-if="useAct.actionButtonUpdate" class="bg-white shadow overflow-hidden sm:rounded-md">
+            <h3 class="px-4 py-3 bg-gray-50 text-sm font-medium text-gray-700">Guest list:</h3>
+            <ul v-if="invitationStore.infoGuests.length > 0" class="divide-y divide-gray-200">
+              <li v-for="guest in invitationStore.infoGuests" :key="guest.id" class="flex items-center justify-between px-4 py-3">
+                <div>
+                  <p class="text-sm font-medium text-gray-900">{{ guest.firstname + ' ' + guest.lastname }}</p>
+                  <p class="text-sm text-gray-500">{{ guest.email }}</p>
+                </div>
+                <span :class="guest.assistance == 1 ? 'text-green-600' : 'text-red-600'" class="text-sm font-medium">
+                  {{ guest.assistance == 1 ? 'Invitation accepted' : 'Invitation not accepted' }}
+                </span>
+              </li>
+            </ul>
+            <p v-else class="px-4 py-3 text-sm text-gray-500">There are no requests for invitations</p>
+          </div>
+        </div>
+  
+        <div class="flex justify-end space-x-4">
+          <button type="submit" class="px-4 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Save
+          </button>
+          <button @click.prevent="cancel()" class="px-4 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+            Cancel
+          </button>
+        </div>
+      </form>
     </div>
-</template>
+  </template>
 
 <script setup>
 import { useSessionStore } from "@/stores/session.js";
@@ -91,12 +94,14 @@ import { computed,onBeforeUnmount, onMounted, ref } from "vue";
 import router from "@/router/index.js";
 import createAct from "@/components/createAct.vue";
 import search from "@/components/search.vue";
+import { info } from "autoprefixer";
 
 
 const session = useSessionStore();
 const useAct = useActsStore();
 const userStore = useUserStore();
 const invitationStore = useInvitationStore();
+const infoMeetingUpdate = computed(() => useAct.updateInfoActAndMeeting);
 
 const nameAuthor = computed(() => session.firstname + " " + session.lastname);
 const addAct = ref(false);
@@ -142,8 +147,16 @@ const submit = async () => {
                 useAct.relationMeetingAndAct(idNewAct, useAct.updateInfoActAndMeeting.id);
                 console.log("el acta deberia de crearse y relacionarse ya que no esta creada para esta reunion");
             }
+
+            if(invitationStore.invitations.length > 0 && useAct.updateInfoActAndMeeting.id_meeting != undefined){
+                const idInvitation = await invitationStore.insertInvitations(useAct.updateInfoActAndMeeting.id_meeting);
+                console.log("se insertaron las invitaciones con el id: "+idInvitation);
+                const sendEmailsInvitations = await invitationStore.sendInvitations(idInvitation)
+                console.log("Correo enviado: "+sendEmailsInvitations);
+            }
+
             console.log("presionando el pt boton de update en NewActa.vue")
-            
+            invitationStore.cleanInvitationsInfoStore();
 
         }else{ // si esta en modo crear
             
@@ -166,11 +179,13 @@ const submit = async () => {
                 const relationMeetingAndAct = await useAct.relationMeetingAndAct(idActCreated, idMeetingCreated);
             }
 
+            invitationStore.cleanInvitationsInfoStore();
         }
 }
 
 const cancel = () =>{
     router.push({name: "adminActs"});
+    invitationStore.cleanInvitationsInfoStore();
 }
 
 onBeforeUnmount( () =>{
@@ -184,17 +199,18 @@ onBeforeUnmount( () =>{
 
 
 /* verificamos al montar el componente si existe informacion para actualizar, o sea, si se monto el componente para actualziarlo
-o para recar un acta nuevo. Si es para actualizar al momento el evento del boton actuazliar de home.vue debio crear una item en 
+o para crar un acta y reunion nuevas. Si es para actualizar al momento el evento del boton actuazliar de home.vue debio crear una item en 
 sessionStorage que contenga esa informacion a actualizar para cargarla en el state de useActStore. En caso de que se haya montado 
 para crear entonces no debe haber ese item en el sessionStorage  y se carga la pagina con esl state en null lista para crear una nueva
 acta*/
 
-onMounted( () =>{
+onMounted( async () =>{
     userStore.getUsers();
     const existInfoToUpate = sessionStorage.getItem("infoActToUpdate");
     
     if(existInfoToUpate != null){
         const infoActToUpdate = JSON.parse(existInfoToUpate);
+
         useAct.updateInfoActAndMeeting = infoActToUpdate.infToUpdate;
         useAct.actionButtonUpdate = true;
 
@@ -204,6 +220,9 @@ onMounted( () =>{
         infoNewAct.value.start_time = useAct.updateInfoActAndMeeting.star_time;
         infoNewAct.value.start_date = useAct.updateInfoActAndMeeting.star_date;
         infoNewAct.value.progress = useAct.updateInfoActAndMeeting.progress;
+
+        // cargar la inforamacio de solicitudes de invitacin enviadas
+        await invitationStore.getInfoGuests(useAct.updateInfoActAndMeeting.id_meeting); 
     }
 
 });

@@ -4,6 +4,7 @@ import axios from "@/axios";
 export const useInvitationStore = defineStore("invitation", {
     state: () => ({
         invitations: [],
+        infoGuests: []
     }),
 
     actions:{
@@ -46,6 +47,21 @@ export const useInvitationStore = defineStore("invitation", {
             })
             return response.data.data;
        },
+
+       async deleteInvitationByMeetingId(idMeeting){
+            const response = await axios.delete("http://localhost:8000/index.php?controller=invitation&action=removeInvitationByMeetingId&meetingId="+idMeeting)
+            return response.data;
+       },
+
+       async getInfoGuests(idMeeting){
+            const response = await axios.get("http://localhost:8000/index.php?controller=invitation&action=getInfoGuestByMeetingId&meetingId="+idMeeting)
+            this.infoGuests = response.data.data;
+       },
+
+       cleanInvitationsInfoStore(){
+        this.invitations = [];
+        this.infoGuests = [];
+       }
 
     }
 

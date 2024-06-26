@@ -9,7 +9,7 @@ export const useActsStore = defineStore("acts", {
         actIdInserted: null,
         meetingInserted: null,
         idMeetingAndAct: null,
-        updateInfoActAndMeeting: null,
+        updateInfoActAndMeeting: [],
         actionButtonUpdate: false
     }),
 
@@ -107,15 +107,16 @@ export const useActsStore = defineStore("acts", {
         },
 
         async deleteActAndMeeting(infoForDelete){
-
+            // para el caso en el que haya un acta en la reunion
             if(infoForDelete.id_act === undefined || infoForDelete.id_meeting === undefined){
                 const responseMeetinDelete = await this.deleteMeeting(infoForDelete.id);
-                console.log("se elimino la reunion correctamente")
-            
+                if(responseMeetinDelete){
+                    console.log("se elimino la reunion correctamente")
+                }
+            // para el caso en el que no haya un acta en la reunion
             }else if ("id_act" in infoForDelete || "id_meeting" in infoForDelete) {
                 
                 const responseActandMeetinDelete = await axios.delete("?controller=meetAndAct&action=removeMeetAndActByIds&idAct="+infoForDelete.id_act+"&idMeeting="+infoForDelete.id_meeting);
-                console.log(responseActandMeetinDelete.data.data);
                 
                 if(responseActandMeetinDelete.data.data == true){
                     console.log("se elimino correctamente la relacion de act y meeting")
@@ -128,6 +129,7 @@ export const useActsStore = defineStore("acts", {
 
         async deleteMeeting(infoMeetingDelete){
             const responseMeetingDelete = await axios.delete("?controller=meeting&action=removeMeeting&id="+infoMeetingDelete);
+            return responseMeetingDelete.data;
         },
 
         async deleteAct(infoActDelete){

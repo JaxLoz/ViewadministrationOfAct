@@ -2,7 +2,7 @@
     <div class="bg-white p-4 rounded-lg shadow-lg flex flex-col w-80 space-y-4">
       <div class="flex-1">
         <div class="text-sm text-gray-500 flex justify-between items-center">
-          <span>Reunión</span>
+          <span>Invitacion a reunión</span>
         </div>
         <p class="mt-1 text-lg font-medium text-gray-900">{{ meetingName }}</p>
         <p class="mt-1 text-sm text-gray-600">Lugar: {{ meetingPlace }}</p>

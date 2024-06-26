@@ -28,12 +28,14 @@ import { computed, onMounted, ref } from "vue";
 import { useSessionStore } from "@/stores/session.js";
 import { useActsStore} from "@/stores/acts.js";
 import { useNotificationStore } from "@/stores/notification";
+import { useInvitationStore } from "@/stores/invitation";
 
 const thereIsAct = ref(null);
 
 const session = useSessionStore();
 const act = useActsStore();
 const notification = useNotificationStore();
+const invitation = useInvitationStore();
 
 session.loadInfoSessionOfSessionStorage();
 const email = computed(() => session.email);
@@ -56,9 +58,9 @@ const updatePage = (actMeetingInfo) =>{
 
 const deleteAct = async (actMeetingInfo) =>{
     console.log(actMeetingInfo)
+    await invitation.deleteInvitationByMeetingId(actMeetingInfo.id);
     await act.deleteActAndMeeting(actMeetingInfo);
     await act.getAllInfoActs(session.IdUser);
-    
 } 
 
 const logOut = () =>{
