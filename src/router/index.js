@@ -6,47 +6,42 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      redirect: "/login"
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
-    },
-    {
-      path: "/registro",
-      name: "formRegister",
-      component: () => import("../views/auth/Registro.vue")
-    },
-    {
-      path: "/login",
-      name: "formLogin",
-      component: () => import("../views/auth/Login.vue")
-    },
-    {
-      path: "/adminActs",
-      name: "adminActs",
-      component: () => import("../views/home/Home.vue")
-    },
-    {
-      path: "/resumenAct",
-      name: "resumenAct",
-      component: () => import("../components/ResumeAct.vue")
+      component: () => import('../layouts/AppLayout.vue'),
+      children: [
+        {
+          path: "/adminActs",
+          name: "adminActs",
+          component: () => import("../views/home/Home.vue")
+        },
+        {
+          path: "/createAct",
+          name: "createNewAct",
+          component: () => import("../views/act/NewAct.vue")
+        }
+      ]
     },
 
     {
-      path: "/createAct",
-      name: "createNewAct",
-      component: () => import("../views/act/NewAct.vue")
-    },
-    {
-      path: "/mailVerification",
-      name: "mailVerification",
-      component: () => import("../views/auth/EmailVerification.vue")
+      path: '/auth',
+      component: () => import('../layouts/AuthLayout.vue'),
+      children: [
+        {
+          path: "/registro",
+          name: "formRegister",
+          component: () => import("../views/auth/Registro.vue")
+        },
+        {
+          path: "/login",
+          name: "formLogin",
+          component: () => import("../views/auth/Login.vue")
+        },
+        
+        {
+          path: "/mailVerification",
+          name: "mailVerification",
+          component: () => import("../views/auth/EmailVerification.vue")
+        }
+      ]
     }
     
   ]

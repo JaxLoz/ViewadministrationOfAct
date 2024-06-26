@@ -1,10 +1,5 @@
 <template>
-    <div class="flex flex-row justify-between gap-y-5 px-5">
-        <h1>Inicios de sesion exitoso {{ userName }}!</h1>
-        <button @click="createNewAct">+ New act</button>
-        <button @click="logOut">LogOut</button>
-    </div class="">
-        <div id="content-resumeActs" class="flex flex-col items-center gap-y-5">
+        <div id="content-resumeActs" class="content-wrapper pt-16 h-full flex flex-col items-center gap-y-5">
             <ResumeAct
             
             v-for="infAct in act.acts" :key="infAct.id ? infAct.id : infAct.id_meeeting"
@@ -27,18 +22,21 @@
 <script setup>
 import ResumeAct from "@/components/ResumeAct.vue";
 import router from "@/router";
-import { useStorePrueba } from "@/stores/pruebas.js";
+import { computed, onMounted, ref } from "vue";
+
+
 import { useSessionStore } from "@/stores/session.js";
 import { useActsStore} from "@/stores/acts.js";
-import { computed, onMounted } from "vue";
-import { ref } from "vue";
+import { useNotificationStore } from "@/stores/notification";
 
 const thereIsAct = ref(null);
+
 const session = useSessionStore();
 const act = useActsStore();
+const notification = useNotificationStore();
 
 session.loadInfoSessionOfSessionStorage();
-const userName = computed(() => session.firstname);
+const email = computed(() => session.email);
 
 const createNewAct = () => {
     router.push({name: 'createNewAct'});
@@ -47,6 +45,7 @@ const createNewAct = () => {
 onMounted( async () =>{
         console.log(session.IdUser)
         await act.getAllInfoActs(session.IdUser);
+        notification.getNotificationOfInvitations(email.value);
     }  
 );
 

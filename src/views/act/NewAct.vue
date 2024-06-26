@@ -1,5 +1,5 @@
 <template>
-    <div id="content-infMeeting" class="w-full h-full flex flex-col gap-y-6 font-sans">
+    <div id="content-infMeeting" class="content-wrapper pt-16 h-full flex flex-col gap-y-6 font-sans">
 
         <div id="title-infMeeting" class="w-full flex flex-col items-center gap-y-3">
             <h1 class="mt-5 font-bold text-3xl" >Meeting information</h1>
@@ -48,11 +48,8 @@
                         <search />
                         <div>
                             <h3 class="font-semibold mb-2">Invited People:</h3>
-                            <ul class="bg-gray-100 rounded-md p-2">
-                                <li v-if="invitationStore.invitations.length === 0">
-                                    <span class="text-gray-500">No people invited yet</span>
-                                </li>
-                                <li v-else-if="invitationStore.invitations.length > 0"
+                            <ul v-if="invitationStore.invitations.length != 0" class="bg-gray-100 rounded-md p-2">
+                                <li
                                 v-for="guest in invitationStore.invitations"
                                 :key="guest.id"
                                 class="flex justify-between items-center py-1 px-5">
@@ -156,7 +153,10 @@ const submit = async () => {
             console.log("se creo la reunion con el id: "+ idMeetingCreated);
 
             if(invitationStore.invitations.length > 0 && idMeetingCreated != undefined){
-                invitationStore.insertInvitations(idMeetingCreated);
+                const idInvitation = await invitationStore.insertInvitations(idMeetingCreated);
+                console.log("se insertaron las invitaciones con el id: "+idInvitation);
+                const sendEmailsInvitations = await invitationStore.sendInvitations(idInvitation)
+                console.log("Correo enviado: "+sendEmailsInvitations);
             }
             
             if(addAct.value){

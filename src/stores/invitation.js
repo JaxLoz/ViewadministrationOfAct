@@ -4,7 +4,6 @@ import axios from "@/axios";
 export const useInvitationStore = defineStore("invitation", {
     state: () => ({
         invitations: [],
-        
     }),
 
     actions:{
@@ -29,8 +28,24 @@ export const useInvitationStore = defineStore("invitation", {
                 assistance: 0,
                 id_meeting: idMeeting,
                 invitations: this.invitations
-          })
-       }
+            })
+            return response.data.data;
+       },
+
+       async sendInvitations(idInvitations){
+            const response = await axios.post("http://localhost:8000/index.php?controller=invitation&action=sendInvitationsToMail", {
+                ids_invitation: idInvitations
+            })
+            return response.data.data;
+       },
+
+       async confirmInvitation(idInvitation){
+            const response = await axios.put("http://localhost:8000/index.php?controller=invitation&action=updateInvitation", {
+                id: idInvitation,
+                assistance: 1
+            })
+            return response.data.data;
+       },
 
     }
 
