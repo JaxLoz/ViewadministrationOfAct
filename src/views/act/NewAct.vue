@@ -222,7 +222,11 @@ onMounted( async () =>{
         infoNewAct.value.progress = useAct.updateInfoActAndMeeting.progress;
 
         // cargar la inforamacio de solicitudes de invitacin enviadas
-        await invitationStore.getInfoGuests(useAct.updateInfoActAndMeeting.id_meeting); 
+        if(useAct.updateInfoActAndMeeting.id_meeting === undefined){ 
+            await invitationStore.getInfoGuests(useAct.updateInfoActAndMeeting.id); // si es una reunion sin acta entonces es por id
+        }else{
+          await invitationStore.getInfoGuests(useAct.updateInfoActAndMeeting.id_meeting); // si es una reunion con acta es por id_meeting
+        }
     }
 
 });

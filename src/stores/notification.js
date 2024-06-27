@@ -9,6 +9,7 @@ export const useNotificationStore = defineStore("notification", {
 
     actions: {
         async getNotificationOfInvitations(email){
+            console.log("email: ", email)
             const response = await axios.get("http://localhost:8000/index.php?controller=invitation&action=getInvitationsByCredentials&email="+email)
             console.log(response.data)
             this.NotificationOfInvitation = response.data.data;
