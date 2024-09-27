@@ -23,7 +23,7 @@
             </div>
             <button 
               type="button" 
-              @click="sendInvitation(user)"
+              @click="addUser(user)"
               class="text-gray-400 hover:text-[#4f46e5] transition-colors duration-200"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user-plus">
@@ -43,10 +43,14 @@
 
 import { useUserStore } from '@/stores/user.js';
 import { useInvitationStore } from "@/stores/invitation.js";
-import { computed, ref } from 'vue';
+import { useAssignmentStore } from '@/stores/assignment';
+import { useCommitmentStore } from '@/stores/commitment';
+import { computed, onMounted, ref } from 'vue';
 
 const userStore = useUserStore();
 const invitationStore = useInvitationStore();
+const assignmentStore = useAssignmentStore();
+const commitmentStore = useCommitmentStore();
 
 const search = ref('');
 
@@ -54,8 +58,17 @@ const searchPeople = () => {
     userStore.searchPersone(search.value);
 }
 
-const sendInvitation = (guest) => {
+const addUser = (guest) => {
+
+  if(assignmentStore.showAssigmentModal){
+    if(assignmentStore.infoCommitment != null){
+      commitmentStore.saveManagerCommitmentPrepared(assignmentStore.infoCommitment.id, guest);
+    }
+  }else{
     invitationStore.savePersonInvited(guest);
+  }
+
+
 }
 
 

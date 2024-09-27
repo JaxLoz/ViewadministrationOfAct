@@ -29,6 +29,7 @@ import { useSessionStore } from "@/stores/session.js";
 import { useActsStore} from "@/stores/acts.js";
 import { useNotificationStore } from "@/stores/notification";
 import { useInvitationStore } from "@/stores/invitation";
+import { useCommitmentStore } from "@/stores/commitment";
 
 const thereIsAct = ref(null);
 
@@ -36,6 +37,7 @@ const session = useSessionStore();
 const act = useActsStore();
 const notification = useNotificationStore();
 const invitation = useInvitationStore();
+const commitment = useCommitmentStore();
 
 session.loadInfoSessionOfSessionStorage();
 const email = computed(() => session.email);
@@ -58,7 +60,8 @@ const updatePage = (actMeetingInfo) =>{
 
 const deleteAct = async (actMeetingInfo) =>{
     console.log(actMeetingInfo)
-    await invitation.deleteInvitationByMeetingId(actMeetingInfo.id);
+    await commitment.deleteCommitment(actMeetingInfo.id_act);
+    await invitation.deleteInvitationByMeetingId(actMeetingInfo.id_meeting);
     await act.deleteActAndMeeting(actMeetingInfo);
     await act.getAllInfoActs(session.IdUser);
 } 

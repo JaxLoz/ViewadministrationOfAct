@@ -34,7 +34,12 @@
         </div>
   
         <createAct v-if="useAct.actionButtonUpdate || (!useAct.actionButtonUpdate && addAct)" v-model="infoNewAct.progress" />
-  
+        <layoutComimment 
+          v-if="!useAct.actionButtonUpdate && addAct"
+          v-model:title="infoNewCommitment.title"
+          v-model:description="infoNewCommitment.description"
+        />
+        <assignmentCommitment v-if="assignmentStore.showAssigmentModal" />
         <div id="invitations-section" class="space-y-6">
           <h2 class="text-2xl font-semibold text-gray-800">Invitations</h2>
           <search />
@@ -89,18 +94,25 @@
 import { useSessionStore } from "@/stores/session.js";
 import { useActsStore } from "@/stores/acts.js";
 import { useUserStore } from "@/stores/user";
+import { useCommitmentStore } from "@/stores/commitment.js";
 import { useInvitationStore } from "@/stores/invitation.js";
+import { useAssignmentStore } from "@/stores/assignment.js";
+
 import { computed,onBeforeUnmount, onMounted, ref } from "vue";
 import router from "@/router/index.js";
+
 import createAct from "@/components/createAct.vue";
 import search from "@/components/search.vue";
-import { info } from "autoprefixer";
+import layoutComimment from "@/components/layoutComimment.vue";
+import assignmentCommitment from "@/components/assignmentCommitment.vue";
 
 
 const session = useSessionStore();
 const useAct = useActsStore();
 const userStore = useUserStore();
 const invitationStore = useInvitationStore();
+const commitmentStore = useCommitmentStore();
+const assignmentStore = useAssignmentStore();
 const infoMeetingUpdate = computed(() => useAct.updateInfoActAndMeeting);
 
 const nameAuthor = computed(() => session.firstname + " " + session.lastname);
@@ -114,6 +126,12 @@ const infoNewAct = ref({
     start_date: "",
     progress: ""
 })
+
+const infoNewCommitment = ref({
+    title: "",
+    description: ""
+})
+
 
 session.loadInfoSessionOfSessionStorage();
 
@@ -155,6 +173,11 @@ const submit = async () => {
                 console.log("Correo enviado: "+sendEmailsInvitations);
             }
 
+            if(commitmentStore.commiments.length > 0){
+              const updatedInfo = await commitmentStore.updateStatusCommitment();
+              console.log(updatedInfo);
+            }
+
             console.log("presionando el pt boton de update en NewActa.vue")
             invitationStore.cleanInvitationsInfoStore();
 
@@ -174,13 +197,26 @@ const submit = async () => {
             
             if(addAct.value){
                 const idActCreated = await useAct.createAct(infoNewAct.value);
-                console.log("se creo el acta con el id: "+idActCreated);   
+                console.log("se creo el acta con el id: "+idActCreated);
                 
+                if(commitmentStore.commimmentsPrepared.length > 0){
+                  const idCommimentsInserted = await commitmentStore.insertCommitment();
+                  console.log("se insertaron los compromisos con el id: "+idCommimentsInserted);
+
+                  if(idCommimentsInserted != undefined && idCommimentsInserted.length > 0 && idActCreated != undefined){
+                    const idRelationActAndCommitment = await commitmentStore.inserteRelationCommitmentAndAct(idActCreated, idCommimentsInserted)
+                    console.log("se relacionaron los compromisos con el acta con el id: "+idRelationActAndCommitment);
+                    const idRelationCredentialAndCommitment = await commitmentStore.insertRelationCredentialAndCommitment(idCommimentsInserted);
+                    console.log("se relacionaron los compromisos con las credenciales con el id: "+idRelationCredentialAndCommitment);
+                  }
+
+                } 
                 const relationMeetingAndAct = await useAct.relationMeetingAndAct(idActCreated, idMeetingCreated);
             }
-
             invitationStore.cleanInvitationsInfoStore();
         }
+
+        router.push({name: "adminActs"});
 }
 
 const cancel = () =>{
@@ -227,6 +263,14 @@ onMounted( async () =>{
         }else{
           await invitationStore.getInfoGuests(useAct.updateInfoActAndMeeting.id_meeting); // si es una reunion con acta es por id_meeting
         }
+
+        // cargar la informacion de los compromisos
+        const idsCommitment = await commitmentStore.getCommitmentsByIdAct(useAct.updateInfoActAndMeeting.id_act);
+        if (idsCommitment.length !== undefined && idsCommitment.length > 0) {
+            const infManager = await commitmentStore.getManagersByIdCommitment(idsCommitment);
+            commitmentStore.buildingStructureCommitmentAndSave(idsCommitment, infManager);
+        }
+
     }
 
 });

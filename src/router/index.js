@@ -40,6 +40,11 @@ const router = createRouter({
           path: "/mailVerification",
           name: "mailVerification",
           component: () => import("../views/auth/EmailVerification.vue")
+        },
+        {
+          path: "/viewAct",
+          name: "viewAct",
+          component: () => import("../views/act/ViewAct.vue")
         }
       ]
     }
